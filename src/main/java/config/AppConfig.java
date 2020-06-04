@@ -1,12 +1,12 @@
 package config;
 
-import model.Blog;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -21,9 +21,7 @@ import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
-import repository.IRepository;
-import repository.blog.BlogRepository;
-import repository.blog.IBlogRepository;
+import repository.IBlogRepository;
 import service.blog.BlogService;
 import service.blog.IBlogService;
 
@@ -35,7 +33,8 @@ import java.util.Properties;
 @Configuration
 @EnableWebMvc
 @ComponentScan("controller")
-@EnableTransactionManagement
+//@EnableTransactionManagement
+@EnableJpaRepositories("repository")
 public class AppConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
@@ -72,17 +71,17 @@ public class AppConfig extends WebMvcConfigurerAdapter implements ApplicationCon
 
     @Bean
     public DataSource dataSource(){
-         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-         dataSource.setUrl("jdbc:mysql://localhost:3306/blog");
-         dataSource.setUsername("root");
-         dataSource.setPassword("123456");
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUsername("root");
+        dataSource.setPassword("123456");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/blog");
 
-         return dataSource;
+        return dataSource;
     }
 
     @Bean
-    LocalContainerEntityManagerFactoryBean entityManagerFactoryBean (){
+    LocalContainerEntityManagerFactoryBean entityManagerFactory(){
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource());
         entityManagerFactoryBean.setPackagesToScan("model");
@@ -107,19 +106,19 @@ public class AppConfig extends WebMvcConfigurerAdapter implements ApplicationCon
     }
 
     @Bean
-    PlatformTransactionManager platformTransactionManager(EntityManagerFactory entityManagerFactory){
+    PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory){
         JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
         return jpaTransactionManager;
     }
 
-    @Bean
-    public IBlogRepository blogRepository(){
-        return new BlogRepository();
-    }
+//    @Bean
+//    public IBlogRepository blogRepository(){
+//        return new BlogRepository();
+//    }
 
     @Bean
-    public IBlogService blogService(){
+    public IBlogService blogServices(){
         return new BlogService();
     }
 }

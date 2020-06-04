@@ -6,22 +6,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import service.blog.IBlogService;
 
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Controller
 public class BlogController {
 
     @Autowired
-    IBlogService blogService;
+    private IBlogService blogServices;
 
     @GetMapping("showList")
     public ModelAndView showList(){
-        List<Blog> blogList = blogService.showAll();
+        List<Blog> blogList = blogServices.showAll();
         return new ModelAndView("showList","list",blogList);
     }
 
@@ -32,13 +29,13 @@ public class BlogController {
 
     @PostMapping("createNewBlog")
     public String createBlog(@ModelAttribute Blog blog){
-        blogService.save(blog);
+        blogServices.save(blog);
         return "redirect:/showList";
     }
 
     @GetMapping("editBlog/{id}")
     public ModelAndView showEditForm(@PathVariable long id){
-        Blog blog = blogService.getOne(id);
+        Blog blog = blogServices.getOne(id);
         ModelAndView modelAndView = new ModelAndView("editForm");
         modelAndView.addObject("blog",blog);
         return modelAndView;
@@ -46,20 +43,20 @@ public class BlogController {
 
     @PostMapping("/edit")
     public String edit(@ModelAttribute Blog blog){
-        blogService.save(blog);
+        blogServices.save(blog);
         return "redirect:/showList";
     }
 
     @GetMapping("deleteBlog/{id}")
-    public String detete(@PathVariable long id){
-        blogService.delete(id);
+    public String deleteById(@PathVariable long id){
+        blogServices.delete(id);
         return "redirect:/showList";
     }
 
-    @GetMapping("likeBlog/{id}")
-    public String upLike(@PathVariable long id){
-        blogService.upLike(id);
-        return "redirect:/showList";
-    }
+//    @GetMapping("likeBlog/{id}")
+//    public String upLike(@PathVariable long id){
+//        blogService.upLike(id);
+//        return "redirect:/showList";
+//    }
 
 }

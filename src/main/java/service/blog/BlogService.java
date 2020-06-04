@@ -3,11 +3,11 @@ package service.blog;
 import model.Blog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.blog.IBlogRepository;
+import repository.IBlogRepository;
 
 import java.util.List;
 
-@Service
+//@Service
 public class BlogService implements IBlogService{
 
     @Autowired
@@ -15,12 +15,12 @@ public class BlogService implements IBlogService{
 
     @Override
     public List<Blog> showAll() {
-        return repository.showAll();
+        return repository.findAll();
     }
 
     @Override
     public Blog getOne(Long id) {
-        return repository.getOneById(id);
+        return repository.findOne(id);
     }
 
     @Override
@@ -35,6 +35,6 @@ public class BlogService implements IBlogService{
 
     @Override
     public void upLike(Long id) {
-        repository.upLike(id);
+//        repository.upLike(id);
     }
 }
